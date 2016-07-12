@@ -19,5 +19,4 @@ void writeLCD(char *v) {
 
 void removeLCD(void) {
     delete lcd;
-    lcd = null;
 }
