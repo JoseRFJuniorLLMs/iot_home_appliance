@@ -1,4 +1,7 @@
+#include <jhd1313m1.h>
 #include "edison.hpp"
+
+upm::Jhd1313m1 *lcd;
 
 void initLCD(void) {
     // i2c address: 0x62 RGB, 0x3E LCD

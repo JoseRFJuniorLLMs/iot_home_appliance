@@ -1,10 +1,6 @@
 #ifndef __EDISON_H__
 #define __EDISON_H__
 
-#include <jhd1313m1.h>
-
-upm::Jhd1313m1 *lcd;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
