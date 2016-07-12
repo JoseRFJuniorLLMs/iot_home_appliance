@@ -20,9 +20,9 @@ func main() {
 	C.initLCD()
 	C.setCursor(0, 0)
 
-	cs := C.CString("Hello from stdio\n")
-	C.writeLCD(cs)
-	C.free(unsafe.Pointer(cs))
+	c := C.CString(s)
+	defer C.free(unsafe.Pointer(c))
+	C.writeLCD(c)
 
 	time.Sleep(5 * time.Second)
 	C.removeLCD()

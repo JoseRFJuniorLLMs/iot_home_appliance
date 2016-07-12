@@ -1,6 +1,8 @@
 #ifndef __EDISON_H__
 #define __EDISON_H__
 
+#include <stdlib.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
