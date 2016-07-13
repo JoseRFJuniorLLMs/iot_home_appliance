@@ -6,5 +6,4 @@ arauto:
 	ar rvs edison.a edison.o
 
 clean:
-	rm edison.a
-	rm edison.o
+	rm -f edison.a edison.o

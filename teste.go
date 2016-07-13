@@ -12,14 +12,17 @@ import (
 type alert int
 
 const (
-	red    alert = 0xFF0000
-	green  alert = 0x00FF00
-	blue   alert = 0x0000FF
-	yellow alert = 0xFFFF00
-	grey   alert = 0x808080
+	green   alert = 0
+	blue    alert = 1
+	yellow  alert = 2
+	red     alert = 3
+	gray    alert = 4
+	unknown alert = 5
 )
 
-var status = green
+var alertTable = []string{"green", "blue", "yellow", "red", "gray", "unknown"}
+
+var statusCode = green
 var msgStatus string
 
 func simpleCmdParse(m map[string]interface{}) error {
@@ -29,53 +32,34 @@ func simpleCmdParse(m map[string]interface{}) error {
 
 	fmt.Println(m["cmd"])
 
-	switch m["cmd"] {
-	case "alert-green":
-		status = green
+	parsed := false
+
+	for i, j := range alertTable[0 : len(alertTable)-1] { // omit the last status (it's a secret!)
+		if m["cmd"] == "alert-"+j {
+			statusCode = alert(i)
+			parsed = true
+		}
+	}
+
+	if !parsed {
+		if str, ok := m["msg"].(string); ok {
+			log.Printf("Error: Unable to decode request. Request = \"%s\"", str)
+		} else {
+			log.Print("Error: Unable to decode request. (And no msg was given!)\n")
+		}
+		return errors.New("Unknown command.")
+	}
+
+	if statusCode != unknown {
 		if str, ok := m["msg"].(string); ok {
 			msgStatus = str
 		} else {
 			msgStatus = ""
 		}
-		log.Print("Alert: Normal condition. ", msgStatus)
-		return nil
-	case "alert-red":
-		status = red
-		if str, ok := m["msg"].(string); ok {
-			msgStatus = str
-		} else {
-			msgStatus = ""
-		}
-		log.Print("Alert: Red condition. ", msgStatus)
-		return nil
-	case "alert-yellow":
-		status = yellow
-		if str, ok := m["msg"].(string); ok {
-			msgStatus = str
-		} else {
-			msgStatus = ""
-		}
-		log.Print("Alert: Yellow condition. ", msgStatus)
-		return nil
-	case "alert-blue":
-		status = blue
-		if str, ok := m["msg"].(string); ok {
-			msgStatus = str
-		} else {
-			msgStatus = ""
-		}
-		log.Print("Alert: Blue condition. ", msgStatus)
-		return nil
-	case "alert-gray":
-		status = grey
-		if str, ok := m["msg"].(string); ok {
-			msgStatus = str
-		} else {
-			msgStatus = ""
-		}
-		log.Print("Alert: Gray condition. ", msgStatus)
+		log.Print("Alert: "+alertTable[statusCode]+" condition. ", msgStatus)
 		return nil
 	}
+
 	return errors.New("Unknown command.")
 }
 
