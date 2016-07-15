@@ -8,15 +8,12 @@ void initLCD(void) {
     lcd = new upm::Jhd1313m1(0, 0x3E, 0x62);
 }
 
-void setColor(int r, int g, int b) {
+void setColorLCD(int r, int g, int b) {
     lcd->setColor(r,g,b);
 }
 
-void setCursor(int r, int c) {
+void writeLCD(int r, int c, char *v) {
     lcd->setCursor(r,c);
-}
-
-void writeLCD(char *v) {
     lcd->write(v);
 }
 

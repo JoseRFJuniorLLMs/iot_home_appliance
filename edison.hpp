@@ -9,9 +9,8 @@ extern "C" {
 
 // LCD
 void initLCD(void);
-void setColor(int r, int g, int b);
-void setCursor(int r, int c);
-void writeLCD(char *v);
+void setColorLCD(int r, int g, int b);
+void writeLCD(int r, int c, char *v);
 void removeLCD(void);
 
 #ifdef __cplusplus
