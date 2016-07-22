@@ -1,5 +1,5 @@
 /*
-arauto (herald)
+arauto server
 */
 
 package main
@@ -19,6 +19,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
 	"unsafe"
 )
 
@@ -27,11 +29,13 @@ func initLCD() {
 }
 
 func writeLCD(r int, c int, s string) {
-	C.setCursor(r, c)
-
 	cs := C.CString(s)
-	C.writeLCD(cs)
+	C.writeLCD(C.int(r), C.int(c), cs)
 	C.free(unsafe.Pointer(cs))
+}
+
+func setColorLCD(r int, g int, b int) {
+	C.setColorLCD(C.int(r), C.int(g), C.int(b))
 }
 
 func removeLCD() {
@@ -85,6 +89,15 @@ func simpleCmdParse(m map[string]interface{}) error {
 		} else {
 			msgStatus = ""
 		}
+
+		if statusCode == red {
+			setColorLCD(255, 0, 0)
+			writeLCD(0, 0, msgStatus)
+		} else if statusCode == green {
+			setColorLCD(0, 255, 0)
+			writeLCD(0, 0, msgStatus)
+		}
+
 		log.Print("Alert: "+alertTable[statusCode]+" condition. ", msgStatus)
 		return nil
 	}
@@ -138,6 +151,15 @@ func apiHandle(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	initLCD()
+
+	go func() {
+		sc := make(chan os.Signal, 1)
+		signal.Notify(sc, os.Interrupt)
+
+		<-sc
+		removeLCD()
+		os.Exit(0)
+	}()
 
 	var port = flag.String("port", "9999", "Define what TCP port")
 	flag.Parse()

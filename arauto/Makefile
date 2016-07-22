@@ -4,7 +4,7 @@ LDFLAGS += `pkg-config --libs upm-i2clcd`
 arauto:
 	gcc -c -Wall -O2 $(CFLAGS) $(LDFLAGS) edison.cpp
 	ar rvs edison.a edison.o
-	go build arauto.go
+	go build
 
 clean:
 	rm -f edison.a edison.o
